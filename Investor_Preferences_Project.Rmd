@@ -1,0 +1,961 @@
+---
+title: "Risk Preferences and Portfolio Allocation: A Sector-Based Analysis of U.S. Equities" 
+author: "Michael Aaron"
+date: "2026-01-06"
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float: true
+    number_sections: true
+  pdf_document:
+    toc: true
+    toc_depth: '4'
+---
+
+# Introduction
+
+## Purpose of the Project
+
+The purpose of this project is to construct and compare a small set of representative investment portfolios using publicly available U.S. equity data in order to illustrate how portfolio composition changes under different investor risk preferences.
+
+Specifically, this analysis seeks to answer the following question: How should an investor allocate capital across major sectors of the U.S. economy when their tolerance for risk differs, and what trade-offs emerge between expected return and portfolio volatility under these different preferences?
+
+This project focuses on:
+
+- Measuring historical risk and return characteristics of of certain U.S. companies over ten-years.
+
+- Modeling portfolio behavior using a traditional quantitative framework
+
+- Demonstrating how different attitudes toward risk lead to different investment strategies.
+
+The goal is to produce three portfolio strategies for three hypothetical investor with different risk preferences: risk-averse, risk-neutral, and risk-seeking. These strategies are created under an assumption that each investor will invest all available capital based on the relative volatility and expected returns of the companies being analyzed. 
+
+---
+
+## Data and Asset Selection
+
+To approximate broad exposure to the U.S. economy while keeping the analysis simple, this project selects one large, established company from each of eight major economic sectors, along with a broad market index used as a benchmark. The selected firms are highly liquid, widely followed, and have long operating histories, making them suitable for a 10-year historical analysis.
+
+In addition to the sector representatives, the SPDR S&P 500 ETF (SPY) is included as a proxy for the overall U.S. equity market. SPY is not treated as a sector, but rather as a reference point for evaluating correlations, market sensitivity, and diversification properties of the sector portfolios.
+
+ Sector | Company | Ticker | Rationale |
+|--------|----------|--------|-----------|
+| Technology | Microsoft | MSFT | Dominant enterprise and consumer technology provider |
+| Healthcare | Johnson & Johnson | JNJ | Diversified healthcare and pharmaceuticals |
+| Financials | JPMorgan Chase | JPM | Largest U.S. commercial and investment bank |
+| Consumer Staples | Procter & Gamble | PG | Stable consumer goods across global markets |
+| Industrials | Caterpillar | CAT | Capital goods and construction equipment |
+| Energy | Exxon Mobil | XOM | Integrated oil and gas producer |
+| Utilities | NextEra Energy | NEE | Large regulated and renewable utility |
+| Communication Services | Alphabet (Class A) | GOOGL | Digital advertising and information services |
+| Market Benchmark | SPDR S&P 500 ETF Trust | SPY | Broad proxy for the overall U.S. equity market|
+
+This approach ensures sector diversification while avoiding over-representation of any single industry. Each firm serves as a proxy for its sector’s general risk and return characteristics, while SPY provides a common market reference used to assess correlation, market exposure, and the diversification role of each asset.
+
+
+## Quantitative Method: Mean–Variance Portfolio Optimization
+
+This project uses **mean–variance portfolio optimization**, originally developed by Harry Markowitz, as its core quantitative framework.
+
+### Description of the Method
+
+Mean–variance optimization models the trade-off between a portfolio’s expected return and its risk, measured as the variance (or standard deviation) of returns.
+
+For a given set of assets, the method uses: Expected returns (estimated from historical averages) and the covariance matrix of returns, to compute portfolio weights that maximize an objective function subject to constraints (such as full investment and no short selling).
+
+The general utility function is:
+
+$$
+U = \mu_p - \frac{A}{2} \sigma_p^2
+$$
+
+Where:
+- $\mu_p$ is the expected portfolio return,
+- $\sigma_p^2$ is the variance of portfolio returns,
+- $A$ is a parameter representing the investor’s risk aversion,
+- $U$ is the total utility derived from investing.
+
+By varying the value of $A$ or by changing the objective function (e.g., maximizing Sharpe ratio or minimizing variance subject to a return target), the same set of assets can produce different optimal portfolios aligned with different investor preferences.
+
+### Why This Method Is Appropriate
+
+Mean–variance optimization is appropriate for this project because:
+
+1. It is transparent and easy to interpret.
+2. It is widely used in practice.
+3. It allows direct modeling of investor preferences.
+4. It is computationally simple and reproducible.
+
+The goal is not to claim optimality in a forecasting sense, but to demonstrate how rational portfolio construction changes under different risk assumptions using a consistent framework.
+
+---
+
+## Investor Risk Preferences and Portfolio Design
+
+### What Are Risk Preferences?
+
+Risk preferences describe how an investor values uncertain outcomes relative to expected return. In general:
+
+- A **risk-averse investor** prefers lower volatility, even at the cost of lower expected return.
+
+- A **risk-neutral investor** cares primarily about expected return and is indifferent to risk unless it affects expected value.
+
+- A **risk-seeking (risk-loving) investor** is willing to accept higher volatility in exchange for the possibility of higher returns.
+
+These preferences influence how investors allocate capital across assets with different risk and return characteristics.
+
+---
+
+### Risk-Averse Investor
+
+Objective: Minimize portfolio volatility subject to full investment and non-negative weights.
+
+This investor profile represents an individual who places a high value on capital preservation and stability, and who experiences lower utility from uncertainty in outcomes. For this investor, risk is something to be avoided rather than embraced, even if doing so requires accepting a lower expected return.
+
+The optimization therefore focuses on minimizing total portfolio variance, producing a highly diversified portfolio that emphasizes assets with lower volatility and lower correlation with the rest of the market. The resulting portfolio lies on the lower end of the efficient frontier and reflects a preference for smoother wealth paths, smaller draw-downs, and reduced exposure to market fluctuations.
+
+This profile is intended to reflect conservative long-term investors such as retirees, endowments, or institutions with strong capital preservation mandates.
+
+---
+
+### Risk-Neutral Investor
+
+Objective: Maximize risk-adjusted return by selecting the tangency portfolio.
+
+This investor profile represents an individual who does not intrinsically dislike risk, but only cares about it insofar as it affects expected performance. Risk is neither inherently bad nor desirable; it is simply a means to an end.
+
+The optimization therefore selects the portfolio with the highest expected return per unit of volatility — the tangency portfolio. This portfolio lies on the efficient frontier and represents the most efficient trade-off between risk and return available from the given asset set.
+
+This profile reflects financially informed investors or institutions that seek efficient diversification and long-run growth without an explicit preference for either minimizing risk or seeking it for its own sake.
+
+---
+
+### Risk-Seeking Investor
+
+Objective: Maximize expected return by investing all available capital in the asset with the highest expected value regardless of volatility.
+
+This investor profile represents an individual who derives positive utility from risk itself rather than viewing risk solely as a cost. Unlike the risk-averse and risk-neutral investors, this investor does not seek diversification or risk-adjusted efficiency, and is willing to accept substantial volatility and draw-downs in pursuit of higher expected returns.
+
+As a result, the optimal portfolio for this investor may lie off the efficient frontier. While such a portfolio may appear inefficient under standard mean–variance criteria, it is optimal under the assumed preferences because the investor’s objective function differs. Volatility is not a disutility in this case, but a feature of the investment opportunity.
+
+This profile is a stylized extreme included to illustrate how fundamentally different preferences can generate qualitatively different portfolio choices even when all investors face the same assets and information.
+
+
+---
+
+## Summary
+
+This project combines a small set of representative U.S. companies with a well-established quantitative framework to explore how different investor preferences translate into different portfolio strategies.
+
+By holding the investment universe and modeling approach constant while varying only the investor’s risk preferences, the analysis isolates the role of risk tolerance in shaping investment decisions.
+
+The resulting portfolios are not predictions, but structured illustrations of how rational investors with different goals would reasonably allocate capital across sectors of the economy.
+
+
+# Exploratory Analysis of Returns 
+
+```{r, include=FALSE}
+#install.packages(c("tidyverse", "tidyquant", "lubridate", "moments", "scales"))
+
+library(tidyverse)
+library(tidyquant)
+library(lubridate)
+library(moments)   # skewness(), kurtosis()
+library(scales)
+```
+
+## Define the tickers and pull ten years of data
+
+```{r}
+tickers <- c("MSFT", "JNJ", "JPM", "PG", "CAT", "XOM", "NEE", "GOOGL", "SPY")
+
+start_date <- Sys.Date() - years(10)
+end_date   <- Sys.Date()
+
+prices <- tq_get(tickers,
+                 from = start_date,
+                 to   = end_date,
+                 get  = "stock.prices") %>%
+  select(symbol, date, adjusted)
+```
+
+## Validate data
+
+```{r}
+prices %>% count(symbol)
+prices %>% summarise(min_date = min(date), max_date = max(date))
+```
+
+## Compute daily log returns
+
+```{r}
+returns <- prices %>%
+  group_by(symbol) %>%
+  arrange(date) %>%
+  mutate(
+    log_return = log(adjusted / lag(adjusted))
+  ) %>%
+  ungroup() %>%
+  filter(!is.na(log_return))
+```  
+
+## Summary statistics (mean, sd, skewness, kurtosis)
+
+```{r}
+return_summary_table <- returns %>%
+  group_by(symbol) %>%
+  summarise(
+    n_days = n(),
+    mean_daily = mean(log_return, na.rm = TRUE),
+    sd_daily   = sd(log_return, na.rm = TRUE),
+    skewness   = moments::skewness(log_return),
+    kurtosis   = moments::kurtosis(log_return),
+    min_daily  = min(log_return),
+    max_daily  = max(log_return),
+    .groups = "drop"
+  ) %>%
+  mutate(
+    mean_annual = mean_daily * 252,
+    sd_annual   = sd_daily * sqrt(252),
+    excess_kurtosis = kurtosis - 3
+  ) %>%
+  select(
+    symbol,
+    n_days,
+    mean_daily, sd_daily,
+    mean_annual, sd_annual,
+    skewness, excess_kurtosis,
+    min_daily, max_daily
+  ) %>%
+  arrange(desc(sd_annual))
+
+return_summary_table_formatted <- return_summary_table %>%
+  mutate(
+    mean_daily  = scales::percent(mean_daily, accuracy = 0.01),
+    sd_daily    = scales::percent(sd_daily, accuracy = 0.01),
+    mean_annual = scales::percent(mean_annual, accuracy = 0.1),
+    sd_annual   = scales::percent(sd_annual, accuracy = 0.1),
+    min_daily   = scales::percent(min_daily, accuracy = 0.1),
+    max_daily   = scales::percent(max_daily, accuracy = 0.1),
+    skewness = round(skewness, 2),
+    excess_kurtosis = round(excess_kurtosis, 2)
+  )
+
+return_summary_table_formatted
+```
+
+## Normalize returns within each company
+
+```{r}
+returns_norm <- returns %>%
+  group_by(symbol) %>%
+  mutate(
+    z_return = (log_return - mean(log_return, na.rm = TRUE)) / 
+               sd(log_return, na.rm = TRUE)
+  ) %>%
+  ungroup()
+```  
+
+## Visualize return distributions
+
+### Density plots
+
+```{r}
+ggplot(returns_norm, aes(x = log_return, color = symbol, fill = symbol)) +
+  geom_density(alpha = 0.3) +
+  facet_wrap(~ symbol, scales = "free_y", ncol = 2) +
+  scale_x_continuous(labels = percent_format(accuracy = 0.1)) +
+  labs(
+    title = "Distribution of Daily Log Returns (10-Year Window)",
+    x = "Daily log return",
+    y = "Density"
+  ) +
+  theme_minimal()
+```  
+
+### Overlay density curves (raw daily log returns)
+
+```{r}
+ggplot(returns_norm, aes(x = log_return, color = symbol)) +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  geom_density(linewidth = 1) +
+  scale_x_continuous(labels = scales::percent_format(accuracy = 0.1)) +
+  labs(
+    title = "Overlay of Daily Log Return Distributions (10-Year Window)",
+    subtitle = "Each line is a company; wider distributions indicate higher volatility",
+    x = "Daily log return",
+    y = "Density",
+    color = "Ticker"
+  ) +
+  theme_minimal()
+```  
+
+### Overlay density Curves with standardized daily log returns
+
+```{r}
+ggplot(returns_norm, aes(x = z_return, color = symbol)) +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  geom_density(linewidth = 1) +
+  labs(
+    title = "Overlay of Standardized Daily Return Distributions",
+    subtitle = "Standardization removes volatility differences; highlights skewness and tail thickness",
+    x = "Standardized daily return (z-score)",
+    y = "Density",
+    color = "Ticker"
+  ) +
+  theme_minimal()
+```  
+
+### Histograms of daily log returns by company
+
+```{r}
+ggplot(returns_norm, aes(x = log_return, fill = symbol)) +
+  geom_histogram(
+    aes(y = after_stat(density)),
+    bins = 80,
+    alpha = 0.7
+  ) +
+  facet_wrap(~ symbol, ncol = 2) +
+  scale_x_continuous(labels = scales::percent_format(accuracy = 0.1)) +
+  labs(
+    title = "Stacked (Self) Histograms by Company",
+    x = "Daily log return",
+    y = "Density",
+    fill = "Ticker"
+  ) +
+  theme_minimal()
+```
+
+## Interpretation of Distributional Moments and Time Horizon
+
+The data visuals above show how distributions from various industries converge upon a similar shape over long time horizons. This is shown by the overlap we see when the distributions are over-layed on the same graph. This behavior is expected per the central limits theorem. Therefore, this analysis highlights an important distinction between short-term and long-term investment horizons, in how different characteristics of return distributions can influence the decision-making of investors.
+
+### Skewness, Kurtosis, and Short-Term Risk 
+
+Skewness and kurtosis describe the shape of a return distribution beyond its mean and variance.
+
+- **Skewness** measures asymmetry — whether extreme outcomes tend to be more positive or more negative.
+- **Kurtosis** measures tail thickness — how frequently extreme outcomes occur relative to a normal distribution.
+
+These moments are relevant for short-term investors because short horizons offer little opportunity for diversification across time. A single extreme price movement can dominate short-term performance, trigger stop-loss orders, cause forced liquidations, or lead to material losses that cannot be easily offset.
+
+As a result, short-term traders, market makers, and risk managers are highly sensitive to tail behavior. High kurtosis implies a greater probability of rare but severe outcomes, while negative skewness implies that extreme losses are more likely than extreme gains. Both are critical risks for strategies that operate over short windows and depend on stable, predictable price behavior.
+
+---
+
+### Why Skewness and Kurtosis Matter Less for Long-Term Investors
+
+For long-term investors, outcomes are aggregated over many periods. Returns are compounded across hundreds or thousands of trading days, and extreme daily movements are diluted within the broader distribution of outcomes.
+
+Over long horizons:
+
+- The average rate of return becomes the dominant driver of performance.
+- Volatility influences the path of wealth accumulation and the depth of draw-downs.
+- Correlation between assets determines the benefits of diversification.
+
+Higher-order moments such as skewness and kurtosis still exist, but their influence is indirect. They manifest primarily through draw-downs and periods of elevated volatility rather than as standalone drivers of portfolio allocation. Consequently, long-term portfolio construction focuses on expected return, volatility, and correlation rather than on the detailed shape of daily return distributions.
+
+---
+
+### Why Volatility Matters More for Long-Term Investors
+
+Volatility plays a different role across time horizons.
+
+In the short run, volatility creates opportunities and risks for traders who seek to exploit price fluctuations. For them, volatility is often desirable because it generates trading opportunities.
+
+In contrast, for long-term investors, volatility represents uncertainty in the growth path of wealth. High volatility increases the likelihood of deep draw-downs, lengthens recovery times, and introduces sequence risk — the risk that poor returns occur early in the investment horizon when capital is largest.
+
+Because long-term investors compound returns over time, volatility has a mathematically and economically meaningful effect on terminal wealth. Even if two assets have the same average return, the asset with higher volatility will typically produce lower compounded wealth due to the concavity of the logarithmic growth function.
+
+As a result, long-term investors are naturally more sensitive to volatility than short-term investors, not because volatility is immediately harmful, but because it shapes the long-run trajectory of portfolio value.
+
+---
+
+### The Role of Time Horizon
+
+Time horizon fundamentally changes what “risk” means.
+
+- Over short horizons, risk is primarily about extreme outcomes and tail behavior.
+- Over long horizons, risk is about growth, stability, and the sustainability of returns over time.
+
+The same return distribution can therefore be interpreted very differently depending on whether the investor is operating over days or decades. This analysis adopts a long-term perspective, emphasizing volatility, correlation, and expected return as the primary drivers of portfolio allocation, while treating skewness and kurtosis as descriptive characteristics that help explain draw-downs and regime shifts rather than as direct optimization inputs.
+
+---
+
+### Summary
+
+Skewness and kurtosis matter most when outcomes are evaluated over short horizons where individual extreme events dominate results. Volatility matters most when outcomes are evaluated over long horizons where compounding, draw-downs, and recovery dynamics determine terminal wealth.
+
+Therefore, the key takeaway from the graphs of daily stock returns is derived from comparing the volatilities of different industries to gauge which are more stable across longer time horizons, and which are less stable. For example, a company like Johnson & Johnson (J&J) which proxies the healthcare and pharmaceuticals industry would likely be preferred by a risk-averse investor because the return distribution for this company indicates it has a lower return variance then say Caterpillar (CAT) which has a higher return variance. Hence, a risk-averse investor would likely invest more in J&J and less in CAT based on their risk preferences. 
+
+# Dependence Structure
+
+```{r, include=FALSE}
+#install.packages(c("tidyverse", "tidyquant", "PerformanceAnalytics", "zoo", "reshape2", "scales"))
+
+library(tidyverse)
+library(tidyquant)
+library(PerformanceAnalytics)
+library(zoo)
+library(reshape2)
+library(scales)
+```
+
+## Build a wide returns matrix
+
+```{r}
+returns_wide <- returns_norm %>%
+  select(date, symbol, log_return) %>%
+  pivot_wider(names_from = symbol, values_from = log_return) %>%
+  arrange(date)
+
+# Correlation functions need a numeric matrix with rownames as dates
+
+ret_mat <- returns_wide %>%
+  select(-date) %>%
+  as.matrix()
+
+rownames(ret_mat) <- as.character(returns_wide$date)
+```
+
+## Compute correlation
+
+```{r}
+cor_mat <- cor(ret_mat, use = "pairwise.complete.obs", method = "pearson")
+cor_mat
+```
+
+```{r}
+
+cor_long <- reshape2::melt(cor_mat) %>%     # Convert matrix to long format: (row, column, value)
+  as_tibble() %>%                           # Convert to a tibble for tidyverse compatibility
+  rename(
+    Asset1 = Var1,                          # Rename row variable to Asset1
+    Asset2 = Var2,                          # Rename column variable to Asset2
+    Corr   = value                          # Rename value column to Corr (correlation coefficient)
+  )
+```
+
+## Create heat map of correlation coefficients between assets
+
+```{r}
+ggplot(cor_long, aes(x = Asset1, y = Asset2, fill = Corr)) +
+  geom_tile(color = "grey90") +
+  geom_text(aes(label = round(Corr, 2)), size = 3) +
+  scale_fill_gradient2(
+    low = "blue",
+    mid = "white",
+    high = "red",
+    midpoint = 0,
+    limits = c(-1, 1),
+    oob = squish
+  ) +
+  labs(
+    title = "Correlation Matrix of Daily Log Returns (10-Year Window)",
+    x = NULL, y = NULL,
+    fill = "Correlation"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    panel.grid = element_blank()
+  )
+```
+
+## Calculate rolling correlations pairwise over time against the market (SPY)
+
+```{r}
+rolling_corr_vs_spy <- function(ret_wide_df, window = 252, spy_col = "SPY") {
+
+  # Identify non-SPY assets
+  assets <- setdiff(names(ret_wide_df), c("date", spy_col))
+
+  map_dfr(assets, function(a) {
+    x <- ret_wide_df[[a]]
+    y <- ret_wide_df[[spy_col]]
+
+    tibble(
+      date = ret_wide_df$date,
+      asset = a,
+      roll_corr = zoo::rollapply(
+        data = cbind(x, y),
+        width = window,
+        FUN = function(z) cor(z[, 1], z[, 2], use = "pairwise.complete.obs"),
+        by.column = FALSE,
+        align = "right",
+        fill = NA
+      )
+    )
+  })
+}
+
+roll_corr_252 <- rolling_corr_vs_spy(returns_wide, window = 252)
+roll_corr_60  <- rolling_corr_vs_spy(returns_wide, window = 60)
+```
+
+## Plot the rolling correlations vs SPY (The market)
+
+In this section we will calculate the level of correlation between each industry we are analyzing and the overall market. We will use 60-day rolling correlations to show shorter regime shifts within each industry, and 252- day rolling correlations to show the long-run market sensitivity of each industry. Moreover, we also visualize the change in correlation of each industry to the market using line charts.
+
+Note: In this analysis, SPY refers to the SPDR S&P 500 ETF Trust, which is used as a proxy for the overall U.S. equity market.
+  
+### 252-day (long-run “market sensitivity”)
+
+```{r, warning=FALSE}
+ggplot(roll_corr_252, aes(x = date, y = roll_corr, color = asset)) +
+  geom_line(linewidth = 0.8) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  facet_wrap(~ asset, ncol = 2) +
+  labs(
+    title = "Rolling 252-Day Correlation vs SPY by Asset",
+    subtitle = "Each panel shows one asset’s correlation with the market over time",
+    x = NULL,
+    y = "Correlation with SPY"
+  ) +
+  theme_minimal()
+```  
+
+### 60-day (shorter “regime shifts”)
+
+```{r, warning=FALSE}
+ggplot(roll_corr_60, aes(x = date, y = roll_corr, color = asset)) +
+  geom_line(linewidth = 0.8) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  facet_wrap(~ asset, ncol = 2) +
+  labs(
+    title = "Rolling 60-Day Correlation vs SPY by Asset",
+    subtitle = "Each panel shows one asset’s correlation with the market over time",
+    x = NULL,
+    y = "Correlation with SPY"
+  ) +
+  theme_minimal()
+```
+
+### Summary table of correlations vs SPY (The market)
+
+```{r}
+corr_vs_spy_summary <- roll_corr_252 %>%
+  group_by(asset) %>%
+  summarise(
+    mean_corr = mean(roll_corr, na.rm = TRUE),
+    median_corr = median(roll_corr, na.rm = TRUE),
+    min_corr = min(roll_corr, na.rm = TRUE),
+    max_corr = max(roll_corr, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  arrange(desc(mean_corr))
+
+corr_vs_spy_summary
+```
+
+### Interpretation of Correlation by Industry with the Market
+
+To understand how each sector proxy behaves relative to the broader U.S. equity market, we examined rolling correlations between each asset’s daily returns and the returns of SPY. This analysis was conducted using both a short rolling window (60 days) to capture short-term regime changes and a longer rolling window (252 days) to capture structural, long-term relationships.
+
+In addition, summary statistics of the rolling correlations were computed for each asset, including the mean, median, minimum, and maximum observed correlations.
+
+### Summary Statistics of Correlation with SPY
+
+The long-run average correlations with SPY vary meaningfully across assets:
+
+- Technology stocks (MSFT and GOOGL) exhibit the highest average correlations with the market (approximately 0.77 and 0.71 respectively), indicating that their returns closely track overall market movements.
+
+- Financials (JPM) and Industrials (CAT) show moderately high correlations (approximately 0.66 and 0.62), reflecting their sensitivity to economic cycles and aggregate demand.
+- Energy (XOM) displays a lower average correlation (approximately 0.48), suggesting that commodity price dynamics introduce idiosyncratic variation distinct from the broader equity market.
+
+- Defensive sectors such as Healthcare (JNJ), Consumer Staples (PG), and Utilities (NEE) exhibit the lowest average correlations with the market (approximately 0.39, 0.39, and 0.35 respectively), indicating that their returns are less tightly linked to overall market movements.
+
+These results are consistent with economic intuition: cyclical and growth-oriented sectors tend to move more closely with the market, while defensive sectors tend to provide partial insulation from market-wide shocks.
+
+---
+
+### Short-Run Correlation Dynamics (60-Day Window)
+
+The 60-day rolling correlations reveal substantial short-term variability in how assets relate to the market.
+
+Across all assets, correlations fluctuate meaningfully over time and can deviate substantially from their long-run averages. In some periods, assets that are typically positively correlated with the market experience sharp drops in correlation, and in a few cases temporarily approach or even cross zero.
+
+This indicates that diversification benefits are time-varying. Assets do not maintain fixed relationships with the market, and short-term market regimes can materially alter correlation structures. For example, during periods of sector-specific stress or commodity price shocks, Energy and Utilities exhibit notably lower and more volatile correlations relative to SPY.
+
+The 60-day window therefore highlights the regime-dependent nature of diversification: relationships that hold on average may break down or reverse temporarily in response to changing macroeconomic or sector-specific conditions.
+
+---
+
+### Long-Run Correlation Dynamics (252-Day Window)
+
+The 252-day rolling correlations smooth out short-term noise and reveal more stable, structural relationships.
+
+Over this longer horizon, assets exhibit relatively stable ordering in terms of their correlation with the market. Technology and Financials consistently show the highest correlations, while Utilities, Consumer Staples, and Healthcare consistently show lower correlations.
+
+While correlations still vary over time even at the annual scale, these variations are more gradual and less extreme than in the 60-day window. This suggests that the long-run diversification properties of assets are reasonably stable, even though short-term dynamics can temporarily distort them.
+  
+The 252-day correlations therefore provide a useful approximation of an asset’s typical market exposure and diversification role in a long-term portfolio.
+
+---
+
+### Implications for Portfolio Construction
+
+Taken together, these results imply that:
+
+1. **Correlation with the market is not constant**, but varies meaningfully across both assets and time horizons.
+
+2. **Short-term correlations are volatile and regime-dependent**, limiting the reliability of diversification benefits over short horizons.
+
+3. **Long-run correlations exhibit persistent structure**, allowing investors to classify assets into higher-correlation (growth/cyclical) and lower-correlation (defensive) categories.
+
+4. **Defensive sectors such as Utilities, Healthcare, and Consumer Staples provide greater long-run diversification benefits**, while Technology and Financials primarily amplify market exposure.
+
+For long-term investors, the 252-day correlation provides the more relevant signal for strategic asset allocation, while the 60-day correlation illustrates the risks associated with relying on diversification in the short run.
+
+Overall, the correlation analysis reinforces the importance of combining assets with different market sensitivities to achieve diversification and manage risk across economic cycles.
+
+# Portfolio Construction and Results 
+
+Here we build out the long-run (252-day) covariance and correlation matrices.
+
+## Part One: Correlation and Covariance Matrices
+```{r}
+# Use daily returns, wide format
+ret_mat <- returns_wide %>%
+  select(-date) %>%
+  as.matrix()
+
+# Annualized covariance matrix
+cov_mat <- cov(ret_mat, use = "pairwise.complete.obs") * 252
+
+# Correlation matrix (already computed earlier, but restated here)
+cor_mat <- cor(ret_mat, use = "pairwise.complete.obs")
+
+cov_mat
+cor_mat
+```
+
+These matrices are the foundation for our portfolio calculations. We need to understand how assets are correlated to build portfolios that are diversified based on investor preferences.
+
+## Part Two: Estimate Expected Returns
+```{r}
+# Next we estimate expected returns using annualized mean log returns.
+
+exp_returns <- returns %>%
+  group_by(symbol) %>%
+  summarise(mean_daily = mean(log_return, na.rm = TRUE)) %>%
+  mutate(mean_annual = mean_daily * 252) %>%
+  arrange(desc(mean_annual))
+
+exp_returns
+
+# Now we convert into a vector aligned with the covariance matrix to setup the optimization for the investor portfolios 
+
+mu <- exp_returns$mean_annual[match(colnames(cov_mat), exp_returns$symbol)]
+names(mu) <- colnames(cov_mat)
+```
+## Part Three: Portfolio Optimization
+
+We’ll use quadratic programming via quadprog.
+```{r, include=FALSE}
+#install.packages("quadprog")
+library(quadprog)
+```
+Constraints:
+
+Fully invested: sum(weights) = 1
+Long-only: weights ≥ 0
+
+### Investor Profile One: Risk-Averse (Minimum Variance)
+
+Approximate by selecting assets that minimize overall volatility.
+
+```{r}
+# ------------------------------------------------------------
+# Risk-Averse Investor Portfolio (Minimum Variance, Long-Only)
+# ------------------------------------------------------------
+# Goal:
+#   Find portfolio weights w that MINIMIZE portfolio variance:
+#       minimize   (1/2) * w' Σ w
+#   subject to:
+#       sum(w) = 1        (fully invested)
+#       w >= 0            (long-only; no short selling)
+#
+# Where:
+#   Σ = cov_mat = annualized covariance matrix of asset returns
+#   w = vector of portfolio weights (one weight per asset)
+#
+# quadprog solves problems of the form:
+#   minimize   (1/2) * x' D x - d' x
+#   subject to A' x >= b
+# and meq specifies how many constraints are equalities.
+# ------------------------------------------------------------
+
+# The quadratic term D in the objective function (Σ = covariance matrix).
+# This penalizes volatility: larger covariances/variances increase the objective.
+Dmat <- cov_mat
+
+# The linear term d in the objective function.
+# Setting this to 0 means we are ONLY minimizing variance (no return term here).
+dvec <- rep(0, ncol(Dmat))
+
+# Constraint matrix A (note quadprog uses A' x >= b):
+# - First column enforces sum(w) >= 1 (we’ll make it equality via meq = 1)
+# - Remaining columns enforce each weight w_i >= 0 (long-only)
+Amat <- cbind(
+  rep(1, ncol(Dmat)),      # sum(w)
+  diag(ncol(Dmat))         # w_1, w_2, ..., w_n
+)
+
+# Right-hand side vector b for A' x >= b:
+# - First element: sum(w) >= 1  (converted to sum(w) = 1 by meq)
+# - Remaining elements: each w_i >= 0
+bvec <- c(1, rep(0, ncol(Dmat)))
+
+# Number of equality constraints:
+# Here, only the first constraint (sum(w) = 1) is treated as an equality.
+meq <- 1
+
+# Solve the quadratic program and retrieve the optimal weights.
+sol_minvar <- solve.QP(Dmat, dvec, Amat, bvec, meq)
+
+# Extract the portfolio weights from the solution.
+w_minvar <- sol_minvar$solution
+
+# Assume the covariance matrix column names are the asset tickers,
+# and label the weight vector accordingly for readability.
+names(w_minvar) <- colnames(cov_mat)
+```
+
+### Investor Profile Two: Risk-Neutral (Max Sharpe Ratio)
+
+We approximate by maximizing expected return per unit variance.
+Closed-form solution (tangency portfolio without risk-free asset):
+
+```{r}
+ #------------------------------------------------------------
+# Risk-Neutral Investor Portfolio (Tangency / Maximum Sharpe)
+# ------------------------------------------------------------
+# Goal:
+#   Find the portfolio that maximizes expected return per unit of risk,
+#   i.e., the portfolio with the highest Sharpe ratio (assuming zero risk-free rate).
+#
+# In mean–variance theory, the unconstrained tangency portfolio has a closed-form:
+#       w* ∝ Σ^{-1} μ
+# where:
+#   Σ = covariance matrix of asset returns
+#   μ = vector of expected returns
+#
+# This gives the direction in weight-space that maximizes return per unit of variance.
+# We then normalize so that the weights sum to 1 (fully invested portfolio).
+# ------------------------------------------------------------
+
+# Compute the inverse of the covariance matrix Σ^{-1}.
+# This captures how each asset contributes to portfolio risk and how risks interact.
+
+# Multiply Σ^{-1} by μ to obtain the raw (unnormalized) tangency weights.
+# This step tilts weights toward assets with higher expected return and
+# lower covariance with the rest of the portfolio.
+
+inv_cov <- solve(cov_mat)
+w_tan_raw <- inv_cov %*% mu
+
+# Normalize the raw weights so that the portfolio is fully invested:
+# sum(w) = 1. This rescales the vector without changing its direction.
+w_tan <- as.vector(w_tan_raw / sum(w_tan_raw))
+
+# Label the weights with the corresponding asset tickers for readability.
+names(w_tan) <- colnames(cov_mat)
+```
+
+### Investor Profile Three: Risk-Seeking (Max Return no volatility constraint) 
+
+Solution: invest everything in the asset with the highest expected return.
+
+```{r}
+# ------------------------------------------------------------
+# Risk-Seeking Investor Portfolio (Maximum Expected Return)
+# ------------------------------------------------------------
+# Goal:
+#   Construct a portfolio that maximizes expected return only,
+#   without penalizing risk (volatility) at all.
+#
+# Under long-only and fully invested constraints, this problem has
+# a simple solution: allocate 100% of capital to the asset with the
+# highest expected return.
+#
+# This represents a stylized risk-loving investor who is willing to
+# accept any level of volatility in exchange for higher expected return.
+# ------------------------------------------------------------
+
+# Initialize a weight vector of zeros (no investment in any asset).
+w_maxret <- rep(0, length(mu))
+
+# Identify the index of the asset with the highest expected return
+# and allocate 100% of the portfolio to that asset.
+w_maxret[which.max(mu)] <- 1
+
+# Label the weights with asset tickers for readability.
+names(w_maxret) <- names(mu)
+```
+
+## Part Four: Summarize Portfolio weights
+
+```{r}
+portfolio_weights <- tibble(
+  asset = colnames(cov_mat),
+  risk_averse = w_minvar,
+  risk_neutral = w_tan,
+  risk_seeking = w_maxret
+)
+
+portfolio_weights
+```
+
+## Part Five: Summarize Portfolio Risk & Return
+
+```{r}
+portfolio_summary <- tibble(
+  profile = c("Risk-Averse", "Risk-Neutral", "Risk-Seeking"),
+  exp_return = c(
+    sum(w_minvar * mu),
+    sum(w_tan * mu),
+    sum(w_maxret * mu)
+  ),
+  volatility = c(
+    sqrt(t(w_minvar) %*% cov_mat %*% w_minvar),
+    sqrt(t(w_tan) %*% cov_mat %*% w_tan),
+    sqrt(t(w_maxret) %*% cov_mat %*% w_maxret)
+  )
+)
+
+portfolio_summary
+```
+
+# Discussion
+
+## Interpreting the Asset-Level Findings
+
+Two core empirical results drive the portfolio outcomes in this project:
+
+Volatility differs more across sectors than average daily return does.
+
+When we compared return distributions, the most visible separation between assets was the width of the distribution (volatility). Differences in distribution shape (skewness and kurtosis) exist, but over a long horizon they are less prominent than dispersion.
+
+Correlation structure is persistent in the long run, but unstable in the short run.
+
+The correlation heatmap shows clear clustering (e.g., cyclical/growth assets tending to move together more than defensive assets). The rolling correlations reinforce an important nuance: correlations are not constants. They shift meaningfully in the short run (60-day windows) while appearing more stable when smoothed over longer windows (252-day windows).
+
+Together, these findings support a traditional long-horizon investment view: long-term allocation is driven primarily by volatility and correlation, with expected return playing a major role only once an investor accepts meaningful risk.
+
+## How These Results Translate into Portfolio Weights
+
+Within a mean–variance framework, the covariance matrix is the optimization engine. It summarizes both: individual asset volatility (diagonal entries), and co-movement between assets (off-diagonal entries).
+
+That means the portfolios can be interpreted directly:
+
+- Risk-averse portfolio (minimum variance):
+
+This portfolio tends to allocate more weight to assets with lower volatility and/or lower correlation with the rest of the set. Conceptually, it prefers “stability providers” and “diversifiers,” not the assets with the highest expected return.
+
+- Risk-neutral portfolio (tangency / max Sharpe approximation):
+  
+This portfolio balances expected return and covariance structure. It tends to favor assets with stronger historical return profiles after adjusting for how much risk they add to the overall portfolio. This is the most “efficient” portfolio under the assumptions of the model.
+
+- Risk-seeking portfolio (max expected return, no risk penalty):
+  
+Because this profile ignores volatility entirely, it falls to a corner solution: 100% allocation to the asset with the highest estimated expected return. This is intentionally extreme and is included to illustrate how dramatically portfolio choice changes when risk is not treated as a cost.
+
+## Linking Distributional Shape to Portfolio Allocation
+
+Even though the optimization uses only means and covariances, the earlier distribution analysis is still relevant. It provides intuition for why certain assets behave the way they do:
+
+- Wider distributions correspond to higher variance, which directly increases portfolio risk.
+
+- Tail thickness and asymmetry (kurtosis and skewness) often show up indirectly through: periods of elevated volatility, unstable correlations during market stress, and larger draw-downs that influence long-run risk perception.
+
+Skewness and kurtosis are not direct inputs into this optimization, but they help explain the volatility and correlation dynamics that ultimately determine the covariance matrix and, therefore, portfolio weights.
+
+## What the Rolling Correlations Suggest About “Diversification”
+
+A key practical lesson from the 60-day vs 252-day results is that diversification is time-horizon dependent:
+
+Over short horizons, correlations can jump, compress, or temporarily break down.
+
+Over longer horizons, the relative ranking of “more market-like” vs “more defensive” assets appears more stable.
+
+This matters because long-run portfolio construction typically assumes that diversification benefits persist. The results of this analysis support that assumption more strongly at the annual scale than at the quarterly scale, which matches standard financial intuition.
+
+# Limitations and Extensions
+
+## Limitations
+
+- Historical estimates are not forecasts.
+
+Expected returns and covariances were estimated from the historical window. Market regimes change, and future return distributions may differ.
+
+- No transaction costs, taxes, or frictions.
+
+The model assumes cost free rebalancing, no taxes, and no liquidity constraints. Real portfolios face all three.
+
+- Long-only constraint.
+
+We restrict weights to be non-negative (no short selling). This improves realism for many retail investors but can reduce efficiency relative to unconstrained solutions.
+
+- Single-stock sector proxies.
+
+Each sector is represented by one company, not a sector ETF or diversified basket. Firm-specific events can influence results and may not represent the sector perfectly.
+
+- Mean–variance focus.
+
+The framework treats variance as the core measure of risk. Investors often care about downside risk, draw-downs, and tail losses more directly than variance alone.
+
+## Hypothetical Extensions of this Project 
+
+- Use sector ETFs instead of single stocks
+(e.g., XLK, XLV, XLF, XLP, XLI, XLE, XLU, XLC) to reduce firm-specific noise.
+
+- Add a risk-free rate and compute a true Sharpe-based tangency portfolio using an assumed annual risk-free rate and consistent scaling.
+
+- Model draw-down-focused risk through downside deviation, CVaR, or maximum draw-down constraints.
+
+- Allow leverage for the risk-seeking profile
+
+A risk-seeking investor in practice often expresses aggressiveness through leverage rather than simply holding a single risky asset. Incorporating leverage into the risk-seeking profile would make the analysis more realistic. 
+
+- Regime analysis
+
+Segment the decade into subperiods (e.g., pre-2020, 2020–2021, 2022 tightening cycle, etc.) and compare stability of covariances and correlations.
+
+# Conclusions
+
+This project demonstrates how portfolio allocation changes when investor preferences change, even when the investment universe and historical dataset are held constant.
+
+The main takeaways are:
+
+Volatility and correlation differences across sectors matter more for long-term allocation than higher-moment distribution shape. Over long horizons, mean–variance behavior is dominated by dispersion (risk) and co-movement (diversification potential).
+
+Market relationships are time-varying. Rolling correlations show that diversification benefits are less reliable in short windows, but appear more stable when viewed at annual horizons.
+
+Investor preferences determine what “optimal” means.
+Under conventional assumptions (risk aversion), the model produces diversified portfolios on the efficient frontier. Under risk-seeking assumptions that treat risk as desirable or irrelevant, the “optimal” choice may not lie on the efficient frontier.
+
+Finally, this project reinforces a practical point: portfolio construction is not just a math problem. It is a structured way to translate beliefs and preferences—about risk, time horizon, and goals—into concrete investment decisions.
+
+# Reproducibility, Transparency, and Disclosure
+
+## Reproducibility
+
+This report is reproducible using publicly available data and open-source tooling.
+
+To reproduce the analysis:
+
+Install the required packages listed in the setup sections.
+
+Knit the document from top to bottom in a fresh R session.
+
+Ensure you have an active internet connection (data is pulled via tidyquant).
+
+Use the same tickers and the same rolling windows (60 and 252 trading days).
+
+Because market data is pulled dynamically relative to the system date, exact numerical outputs (returns, correlations, and optimal weights) may shift slightly over time. However, the structure of the analysis and the qualitative conclusions should remain stable.
+
+## Disclosure
+
+This project was developed with the assistance of generative AI as a support tool for drafting, editing, and code annotation. All modeling choices, data analysis, interpretation, and final content decisions were made by the author, who takes full responsibility for the work.
